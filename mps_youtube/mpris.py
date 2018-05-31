@@ -92,7 +92,10 @@ class Mpris2Controller:
         """
         try:
             while True:
-                data = conn.recv()
+                try:
+                    data = conn.recv()
+                except KeyboardInterrupt:
+                    continue
                 if isinstance(data, tuple):
                     name, val = data
                     if name == 'socket':
