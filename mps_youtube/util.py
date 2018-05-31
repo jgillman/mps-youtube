@@ -84,6 +84,15 @@ def has_exefile(filename):
     return False
 
 
+def _content_available(url):
+    try:
+        response = urllib.request.urlopen(url)
+    except urllib.request.HTTPError:
+        return False
+    else:
+        return response.getcode() < 300
+
+
 def dbg(*args):
     """Emit a debug message."""
     # Uses xenc to deal with UnicodeEncodeError when writing to terminal

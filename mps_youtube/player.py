@@ -138,11 +138,28 @@ class BasePlayer:
         """ Launch player application. """
         pass
 
+    def _getbestthumb(self):
+        part_url = "http://i.ytimg.com/vi/%s/" % self.song.ytid
+        # Thumbnail resolution sorted in descending order
+        thumbs = ("maxresdefault.jpg",
+                  "sddefault.jpg",
+                  "hqdefault.jpg",
+                  "mqdefault.jpg",
+                  "default.jpg")
+        for thumb in thumbs:
+            url = part_url + thumb
+            # TODO:
+            # Replace this with `pafy.backend_shared.BasePafy._content_available()`
+            # and cleanup `util._content_available()` once mps-youtube/pafy#211 has merged
+            # We could also try replace this function with `Pafy.getbestthumb()`.
+            if util._content_available(url):
+                return url
+
     def send_metadata_mpris(self):
         metadata = util._get_metadata(self.song.title)
 
         if metadata is None:
-            arturl = "https://i.ytimg.com/vi/%s/default.jpg" % self.song.ytid
+            arturl = self._getbestthumb()
             metadata = (self.song.ytid, self.song.title, self.song.length,
                         arturl, [''], '')
         else:
